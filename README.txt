@@ -1,0 +1,3 @@
+Meta info... 
+ Deploying using heroku .
+U must need have to git
