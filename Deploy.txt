@@ -1,0 +1,97 @@
+....go on the directory on the manage.py..
+git init
+
+
+
+....gitignore files write. name
+env/
+*.pyc
+*.swp
+.DS_Store
+.env
+staticfiles/			#also becoz it is for development..
+
+
+
+#now to the directory
+
+virtualenv name
+
+source name/bin/activate
+pip install django whitenoise gunicorn deco python-decouple dj_database_url psycopg2
+
+
+
+...create in the file name of .env in the same directory....
+SECRET_KEY='codesecret'
+
+
+
+
+
+....setup the in the setting.py
+
+from decouple import config
+import dj_database_url
+SECRET_KEY=('SECRET_KEY')
+DEBUG= config('DEBUG',default=True,cast = bool)
+
+if DEBUG:
+	DATABASES=
+
+
+else:
+	DATABASE={
+			'default':dj_database_url.config(default=config('DATABASE_URL'))
+	}
+
+
+
+
+
+
+
+....now login to heroku first go the manage.py directory ...
+heroku login
+
+
+
+
+...and make a requirement text file using  first..
+...go to the master and in in virtual environment...
+source name/bin/activate
+pip3 freeze > Requirement.txt
+
+
+....create a runtime.txt
+
+
+create a procfile 
+web: gunicorn zomato.wsgi
+
+
+git remote -v					##in env
+heroku config					##in env
+heroku addons:create heroku-postgresql		##in Env
+
+
+
+
+git push master heroku				#innenv
+heroku ps;scale web=1				#in env
+
+
+
+
+
+
+
+
+
+
+heroku run python3 migrates
+heroku run python3 createsuperuser
+
+
+
+heroku logs
