@@ -1,43 +1,20 @@
-....go on the directory on the manage.py..
-git init
+1.) Make it production ready...
+create .env file in the root (manage.py)
+put secret key in .env file...
 
-
-
-....gitignore files write. name
-env/
-*.pyc
-*.swp
-.DS_Store
-.env
-staticfiles/			#also becoz it is for development..
-
-
-
-#now to the directory
-
-virtualenv name
-
-source name/bin/activate
-pip install django whitenoise gunicorn deco python-decouple dj_database_url psycopg2
-
-
-
-...create in the file name of .env in the same directory....
-SECRET_KEY='codesecret'
-
-
-
-
-
-....setup the in the setting.py
-
-from decouple import config
-import dj_database_url
-SECRET_KEY=('SECRET_KEY')
-DEBUG= config('DEBUG',default=True,cast = bool)
+and put SECRET_KEY=config('SECRET_KEY')				#settings.py
+and put DEBUG = config('DEBUG', default= True, cast =bool)	#settings.py
+ALLOWED_HOST=[*]						
 
 if DEBUG:
-	DATABASES=
+	DATABASES={
+
+			'default':{
+					'ENGINE': 'django.db.backends.sqlite3',
+					'NAME': os.path.join(BASE_DIR, ''),
+			
+			}	
+	}
 
 
 else:
@@ -46,52 +23,98 @@ else:
 	}
 
 
+STATICFILES_DIRS=(
+
+		os.path.join(BASE_DIR, 'static/'),			##while making static file must need to create an app name then other means img,media,css like other files...
+
+)
+
+STATIC_ROOT= 'static/files'
 
 
 
 
 
-....now login to heroku first go the manage.py directory ...
+from whitenoise.django import DjangoWhiteNoise			##in the wsgi.py
+
+application = DjangoWhiteNoise(application)			##in the wsgi.py
+
+
+-----------------Ready the production
+
+
+git init
+create requirement.txt
+
+
+create .gitignore  name file and put it...
+env
+.env/
+*.pyc
+*.swp
+.DS_Store
+staticfiles/
+
+
+git status		#check the files to added in the git
+git add .
+
+
+create a runtime.txt file for heroku specification
+python-3.6.6
+
+
+create where to work so, create a file name Procfile
+web: gunicorn appname.wsgi
+
+
+git status 
+git add .
+
+git commit -m "my first commit"
+
+
+
+--------------
+#create the app name in heroku
 heroku login
+heroku apps:create appname
+heroku addons:create heroku -postgresql
+git remote -v	#must remote 
+		#if the case you are not add the git before the making of heroku appname...
+		#heroku addons:create heroku -postgresql --app appname
+
+
+heroku config
+heroku config:create SECRET_KEY=''
+heroku config
+heroku config:set DEBUG='False'
+heroku config
+
+
+
+---------push code to heroku-------
+git push heroku master
+
+
+------port forwarding on -----dynos----scalling the process to web...
+heroku ps:scale web=1
+
+
+----------access the 
+heroku run python manage.py migrate
+heroku run python manage.py createsuperuser
+id, passwd
+
+
+#uploading existing data
+------------------------------------------------
+sudo apt-get --with-new-pkgs upgrade		|	
 
 
 
 
-...and make a requirement text file using  first..
-...go to the master and in in virtual environment...
-source name/bin/activate
-pip3 freeze > Requirement.txt
 
+heroku ps:exec
 
-....create a runtime.txt
-
-
-create a procfile 
-web: gunicorn zomato.wsgi
-
-
-git remote -v					##in env
-heroku config					##in env
-heroku addons:create heroku-postgresql		##in Env
-
-
-
-
-git push master heroku				#innenv
-heroku ps;scale web=1				#in env
-
-
-
-
-
-
-
-
-
-
-heroku run python3 migrates
-heroku run python3 createsuperuser
-
-
-
-heroku logs
+heroku run python manage.py 
